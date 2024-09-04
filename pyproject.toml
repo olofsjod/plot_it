@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "plot_it"
+version = "0.1"
+authors = [
+    {name = "Olof Sjödin", email = "olsj@kth.se"}
+]
+
+[projects.scripts]
+my-client = "plot_it:main"
