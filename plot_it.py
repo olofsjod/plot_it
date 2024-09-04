@@ -1,4 +1,4 @@
-# plot_it.py
+# plot_it.py v0.1.1
 # written by Olof Sjödin <olsj@kth.se> 2024-05-06
 
 import argparse
@@ -50,38 +50,38 @@ def main():
     parser.add_argument(
         "--legend", type=str, nargs="+", default=None
     )
-    
+
     parser.add_argument(
     	"--multiply", nargs=2, type=str, metavar=('column', 'multipl_factor'), action='append', default=[]
     )
-    
+
     parser.add_argument(
     	"--invert", nargs=1, type=int, metavar='column', action='append', default=[]
     )
-    
+
     parser.add_argument(
         "--title", type=str, default=None
     )
-    
+
     parser.add_argument(
         "--save", type=str, default=None
     )
-    
+
     parser.add_argument(
         "--dont-show", action="store_true", default=False
     )
 
-
+    print("test")
     args = parser.parse_args()
     data_mx = np.genfromtxt(args.csv_filename, delimiter=args.csv_delimiter)
-    
+
     for col in args.invert:
         col=col[0]
         data_mx[:, col-1] = 1/data_mx[:, col-1]
-    
+
     for col, fac in args.multiply:
         data_mx[:, int(col)-1] = float(fac) * data_mx[:, int(col)-1]
-        
+
     x = data_mx[:, args.x-1]
     data_mx_excl_x = np.delete(data_mx, args.x-1, 1)
     if args.y is not None:
@@ -104,18 +104,18 @@ def main():
     y_max = np.max(y) if args.y_lim is None else args.y_lim[1]
 
     ax.set(
-        xlim=(x_min, x_max), xticks=np.arange(x_min, x_max, args.x_num_ticks),
-        ylim=(y_min, y_max), yticks=np.arange(y_min, y_max, args.y_num_ticks)
+        xlim=(x_min, x_max), xticks=np.arange(x_min, x_max, (x_max-x_min)/args.x_num_ticks),
+        ylim=(y_min, y_max), yticks=np.arange(y_min, y_max, (y_max-y_min)/args.y_num_ticks)
     )
 
     if args.x_label is not None:
         plt.xlabel(args.x_label)
     if args.y_label is not None:
         plt.ylabel(args.y_label)
-        
+
     if args.title is not None:
         plt.title(args.title)
-        
+
     if args.save is not None:
         fig.savefig(args.save)
 
