@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "plot_it"
@@ -8,6 +8,7 @@ version = "0.1.1"
 authors = [
     {name = "Olof Sjödin", email = "olsj@kth.se"}
 ]
+dependencies = ["setuptools>=61.0", "matplotlib", "numpy", "argparse", "PyQt6"]
 
-[projects.scripts]
-my-client = "plot_it:main"
+[project.scripts]
+plot_it = "plot_it:main"

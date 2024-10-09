@@ -71,7 +71,6 @@ def main():
         "--dont-show", action="store_true", default=False
     )
 
-    print("test")
     args = parser.parse_args()
     data_mx = np.genfromtxt(args.csv_filename, delimiter=args.csv_delimiter)
 
