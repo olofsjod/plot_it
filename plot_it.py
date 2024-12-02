@@ -100,7 +100,6 @@ def main():
     
     # Removes "x" column
     data_mx_excl_x = np.delete(data_mx, args.x-1, 1)
-    print(data_mx_excl_x)
     
     if args.y is not None:
         y = data_mx_excl_x[:, np.array(args.y)-1]
