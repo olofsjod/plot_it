@@ -1,4 +1,4 @@
-# plot_it.py v0.1.1
+# plot_it.py v0.2.1
 # written by Olof Sjödin <olsj@kth.se> 2024-05-06
 
 import argparse
@@ -70,10 +70,25 @@ def main():
     parser.add_argument(
         "--dont-show", action="store_true", default=False
     )
+    
+    parser.add_argument(
+        "--marker", type=str, default=""
+    )
+    
+    parser.add_argument(
+        "--linestyle", type=str, default="-"
+    )
+    
+    parser.add_argument(
+        "--skip-header", type=int, default=1
+    )
 
     args = parser.parse_args()
-    data_mx = np.genfromtxt(args.csv_filename, delimiter=args.csv_delimiter)
-
+    data_mx = np.genfromtxt(args.csv_filename, delimiter=args.csv_delimiter, skip_header=args.skip_header)
+    
+    # Remove columns which only have NaN
+    data_mx = data_mx[:, ~np.isnan(data_mx).any(axis=0)]
+    
     for col in args.invert:
         col=col[0]
         data_mx[:, col-1] = 1/data_mx[:, col-1]
@@ -82,7 +97,11 @@ def main():
         data_mx[:, int(col)-1] = float(fac) * data_mx[:, int(col)-1]
 
     x = data_mx[:, args.x-1]
+    
+    # Removes "x" column
     data_mx_excl_x = np.delete(data_mx, args.x-1, 1)
+    print(data_mx_excl_x)
+    
     if args.y is not None:
         y = data_mx_excl_x[:, np.array(args.y)-1]
     else:
@@ -91,10 +110,10 @@ def main():
     fig, ax = plt.subplots()
     if args.legend is not None:
         for (yp, legend) in y.T, args.legend:
-            ax.plot(x, yp, label=legend)
+            ax.plot(x, yp, label=legend, linestyle=args.linestyle, marker=args.marker)
     else:
         for yp in y.T:
-            ax.plot(x, yp)
+            ax.plot(x, yp, linestyle=args.linestyle, marker=args.marker)
 
     x_min = np.min(x) if args.x_lim is None else args.x_lim[0]
     x_max = np.max(x) if args.x_lim is None else args.x_lim[1]
