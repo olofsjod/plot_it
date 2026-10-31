@@ -1,6 +1,6 @@
 """
-.. plot_it.py v0.3
-    written by Olof Sjödin <olsj@kth.se> 2025-07-17
+.. plot_it.py
+    written by Olof Sjödin <olsj@kth.se>
 """
 
 import argparse
@@ -8,17 +8,24 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from pathlib import Path
-
+from importlib.metadata import version
 
 def main():
     parser = argparse.ArgumentParser(
         description="Program to quickly plot from csv files."
     )
     parser.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        version=f"%(prog)s {version('plot_it')}"
+    )
+    parser.add_argument(
         "csv_filename", type=str, nargs="+", help="The csv files which we want to plot"
     )
 
     parser.add_argument(
+	"-d",
         "--csv-delimiter",
         type=str,
         help="The CSV delimiter. Default: Any consecutive whitespaces act as delimeter",
@@ -26,7 +33,8 @@ def main():
     )
 
     parser.add_argument(
-        "--x",
+        "-x",
+	"--x-column-num",
         type=int,
         help="The column number which we want to have on the x-axis. Default: 1",
         default=1,
@@ -46,7 +54,8 @@ def main():
     parser.add_argument("--x-num-ticks", type=float, default=10)
 
     parser.add_argument(
-        "--y",
+        "-y",
+	"--y-column-num",
         type=int,
         nargs="+",
         help="The column number which we want to have on the y-axis. Default: Everything but column x.",
@@ -68,6 +77,7 @@ def main():
     parser.add_argument("--legend", type=str, nargs="+", default=None)
 
     parser.add_argument(
+	"-mp",
         "--multiply",
         nargs=2,
         type=str,
@@ -77,17 +87,17 @@ def main():
     )
 
     parser.add_argument(
-        "--invert", nargs=1, type=int, metavar="column", action="append", default=[]
+        "-i", "--invert", nargs=1, type=int, metavar="column", action="append", default=[]
     )
 
     parser.add_argument("--title", type=str, default=None)
 
-    parser.add_argument("--save", type=str, default=None)
+    parser.add_argument("-s", "--save", type=str, default=None)
 
     parser.add_argument("--dont-show", action="store_true", default=False)
-    parser.add_argument("--show-legend", action="store_true", default=False)
 
     parser.add_argument(
+	"-m",
         "--marker",
         type=str,
         default="",
@@ -132,8 +142,8 @@ def main():
             skip_header=args.skip_header,
             invert=args.invert,
             multiply=args.multiply,
-            col_x=args.x,
-            col_y=args.y,
+            col_x=args.x_column_num,
+            col_y=args.y_column_num,
         )
 
         x_min.append(np.min(x))
@@ -173,7 +183,7 @@ def main():
         yticks=np.arange(y_min, y_max, (y_max - y_min) / args.y_num_ticks),
     )
 
-    if args.show_legend:
+    if args.legend is not None:
         ax.legend()
 
     if args.x_label is not None:
